@@ -513,6 +513,15 @@ h1, h2, h3, h4 { margin: 0; }
 .auth-tabs button { border: 0; background: none; border-radius: 8px; padding: 8px; font-weight: 600; font-size: 13.5px; color: var(--ink-2); }
 .auth-tabs button.active { background: var(--surface); color: var(--primary-dark); box-shadow: var(--shadow); }
 .auth-hint { text-align: center; color: var(--ink-muted); font-size: 12px; margin-top: 16px; }
+.auth-lang { display: flex; justify-content: center; gap: 6px; margin-top: 18px; }
+.auth-lang-btn {
+  border: 1px solid var(--border); background: none;
+  border-radius: 999px; padding: 5px 14px;
+  font-size: 12.5px; font-weight: 600; color: var(--ink-2);
+  transition: all 0.12s;
+}
+.auth-lang-btn:hover { border-color: var(--border-strong); color: var(--ink); }
+.auth-lang-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary-dark); }
 
 /* ============ Settings ============ */
 .settings-stack { display: flex; flex-direction: column; gap: 16px; max-width: 720px; }

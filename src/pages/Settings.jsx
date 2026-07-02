@@ -1,21 +1,22 @@
 import { useState } from 'react'
 import { useApp, CURRENCIES, fmtMoney } from '../store'
-
-const THEME_OPTIONS = [
-  { id: 'light', label: 'Light', hint: 'Bright and clean' },
-  { id: 'dark', label: 'Dark', hint: 'Easy on the eyes' },
-  { id: 'system', label: 'System', hint: 'Match your device' },
-]
+import { LANGS } from '../i18n'
 
 export default function Settings() {
-  const { user, updateProfile, theme, setTheme, currency, setCurrency, resetData } = useApp()
+  const { user, updateProfile, theme, setTheme, currency, setCurrency, lang, setLang, resetData, t, tl } = useApp()
+
+  const themeOptions = [
+    { id: 'light', label: t('settings.light'), hint: t('settings.lightHint') },
+    { id: 'dark', label: t('settings.dark'), hint: t('settings.darkHint') },
+    { id: 'system', label: t('settings.system'), hint: t('settings.systemHint') },
+  ]
 
   return (
     <div className="page">
       <div className="page-head">
         <div>
-          <h1 className="page-title">Settings</h1>
-          <div className="page-sub">Personalize WealthShare and manage your data.</div>
+          <h1 className="page-title">{t('settings.title')}</h1>
+          <div className="page-sub">{t('settings.subtitle')}</div>
         </div>
       </div>
 
@@ -24,12 +25,12 @@ export default function Settings() {
         <section className="card">
           <div className="card-head">
             <div>
-              <div className="card-title">Appearance</div>
-              <div className="card-sub">Choose how WealthShare looks</div>
+              <div className="card-title">{t('settings.appearance')}</div>
+              <div className="card-sub">{t('settings.appearanceSub')}</div>
             </div>
           </div>
-          <div className="theme-grid" role="radiogroup" aria-label="Theme">
-            {THEME_OPTIONS.map((opt) => (
+          <div className="theme-grid" role="radiogroup" aria-label={t('settings.appearance')}>
+            {themeOptions.map((opt) => (
               <button
                 key={opt.id}
                 role="radio"
@@ -49,44 +50,62 @@ export default function Settings() {
         </section>
 
         {/* Profile */}
-        <ProfileSection user={user} onSave={updateProfile} />
+        <ProfileSection user={user} onSave={updateProfile} t={t} />
 
-        {/* Preferences */}
+        {/* Preferences — language + currency */}
         <section className="card">
           <div className="card-head">
             <div>
-              <div className="card-title">Preferences</div>
-              <div className="card-sub">Regional and display options</div>
+              <div className="card-title">{t('settings.preferences')}</div>
+              <div className="card-sub">{t('settings.preferencesSub')}</div>
             </div>
           </div>
+
+          <div className="setting-row" style={{ borderBottom: '1px solid var(--gridline)', paddingBottom: 14, marginBottom: 4 }}>
+            <div>
+              <div className="setting-label">{t('settings.language')}</div>
+              <div className="setting-desc">{t('settings.languageSub')}</div>
+            </div>
+            <select
+              className="setting-select"
+              value={lang}
+              onChange={(e) => setLang(e.target.value)}
+              aria-label={t('settings.language')}
+            >
+              {Object.entries(LANGS).map(([code, l]) => (
+                <option key={code} value={code}>{l.native} ({code.toUpperCase()})</option>
+              ))}
+            </select>
+          </div>
+
           <div className="setting-row">
             <div>
-              <div className="setting-label">Currency</div>
-              <div className="setting-desc">Symbol used across the app · e.g. {fmtMoney(1250)}</div>
+              <div className="setting-label">{t('settings.currency')}</div>
+              <div className="setting-desc">{t('settings.currencySub', { sample: fmtMoney(1250) })}</div>
             </div>
             <select
               className="setting-select"
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
-              aria-label="Currency"
+              aria-label={t('settings.currency')}
             >
               {Object.entries(CURRENCIES).map(([code, c]) => (
-                <option key={code} value={code}>{c.symbol} {code} — {c.label}</option>
+                <option key={code} value={code}>{c.symbol} {code} — {tl('ccy', c.label)}</option>
               ))}
             </select>
           </div>
         </section>
 
         {/* Data & privacy */}
-        <DataSection onReset={resetData} />
+        <DataSection onReset={resetData} t={t} />
 
-        <div className="settings-about">WealthShare · v1.0.0 · Demo build</div>
+        <div className="settings-about">{t('settings.about')}</div>
       </div>
     </div>
   )
 }
 
-function ProfileSection({ user, onSave }) {
+function ProfileSection({ user, onSave, t }) {
   const [name, setName] = useState(user.name)
   const [saved, setSaved] = useState(false)
   const dirty = name.trim() && name.trim() !== user.name
@@ -102,54 +121,54 @@ function ProfileSection({ user, onSave }) {
     <section className="card">
       <div className="card-head">
         <div>
-          <div className="card-title">Profile</div>
-          <div className="card-sub">Your public display details</div>
+          <div className="card-title">{t('settings.profile')}</div>
+          <div className="card-sub">{t('settings.profileSub')}</div>
         </div>
       </div>
       <div className="profile-row">
         <img className="profile-avatar" src={user.avatar} alt="" onError={(e) => { e.currentTarget.style.visibility = 'hidden' }} />
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="field" style={{ marginBottom: 10 }}>
-            <label htmlFor="set-name">Display name</label>
+            <label htmlFor="set-name">{t('settings.displayName')}</label>
             <input id="set-name" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div className="field" style={{ marginBottom: 0 }}>
-            <label htmlFor="set-email">Email</label>
+            <label htmlFor="set-email">{t('settings.email')}</label>
             <input id="set-email" value={user.email} disabled />
           </div>
         </div>
       </div>
       <div className="form-actions" style={{ marginTop: 16 }}>
-        {saved && <span className="save-flash">✓ Saved</span>}
-        <button className="btn btn-primary" onClick={save} disabled={!dirty}>Save changes</button>
+        {saved && <span className="save-flash">{t('settings.saved')}</span>}
+        <button className="btn btn-primary" onClick={save} disabled={!dirty}>{t('settings.saveChanges')}</button>
       </div>
     </section>
   )
 }
 
-function DataSection({ onReset }) {
+function DataSection({ onReset, t }) {
   const [confirming, setConfirming] = useState(false)
 
   return (
     <section className="card">
       <div className="card-head">
         <div>
-          <div className="card-title">Data &amp; privacy</div>
-          <div className="card-sub">This demo stores everything in your browser only</div>
+          <div className="card-title">{t('settings.dataPrivacy')}</div>
+          <div className="card-sub">{t('settings.dataPrivacySub')}</div>
         </div>
       </div>
       <div className="setting-row">
         <div>
-          <div className="setting-label">Reset demo data</div>
-          <div className="setting-desc">Restore accounts, transactions, goals and posts to their defaults.</div>
+          <div className="setting-label">{t('settings.resetData')}</div>
+          <div className="setting-desc">{t('settings.resetDataSub')}</div>
         </div>
         {confirming ? (
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn btn-ghost" onClick={() => setConfirming(false)}>Cancel</button>
-            <button className="btn btn-danger" onClick={() => { onReset(); setConfirming(false) }}>Confirm reset</button>
+            <button className="btn btn-ghost" onClick={() => setConfirming(false)}>{t('common.cancel')}</button>
+            <button className="btn btn-danger" onClick={() => { onReset(); setConfirming(false) }}>{t('settings.confirmReset')}</button>
           </div>
         ) : (
-          <button className="btn btn-ghost" onClick={() => setConfirming(true)}>Reset</button>
+          <button className="btn btn-ghost" onClick={() => setConfirming(true)}>{t('settings.reset')}</button>
         )}
       </div>
     </section>

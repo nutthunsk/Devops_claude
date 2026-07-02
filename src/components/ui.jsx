@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
-import { fmtMoney, fmtDate, catEmoji } from '../store'
+import { fmtMoney, fmtDate, catEmoji, useApp } from '../store'
 
 /* ---------------- Stat tile ---------------- */
-export function StatTile({ label, value, delta, deltaDir, hero, tone }) {
+export function StatTile({ label, value, delta, deltaDir, hero, tone, vs }) {
   return (
     <div className="card stat-tile">
       <div className="stat-label">{label}</div>
@@ -11,7 +11,7 @@ export function StatTile({ label, value, delta, deltaDir, hero, tone }) {
       </div>
       {delta && (
         <div className={`stat-delta ${deltaDir}`}>
-          {deltaDir === 'up' ? '▲' : '▼'} {delta} <span className="vs">vs last month</span>
+          {deltaDir === 'up' ? '▲' : '▼'} {delta} <span className="vs">{vs}</span>
         </div>
       )}
     </div>
@@ -118,12 +118,13 @@ function PiggyIllustration() {
 
 /* ---------------- Transaction row / list ---------------- */
 export function TxRow({ tx, showAccount = true }) {
+  const { tl } = useApp()
   const sign = tx.type === 'income' ? '+' : '−'
   return (
     <div className="tx-row">
       <div className="tx-icon" aria-hidden="true">{catEmoji(tx.category)}</div>
       <div className="tx-info">
-        <div className="tx-cat">{tx.category}</div>
+        <div className="tx-cat">{tl('cat', tx.category)}</div>
         <div className="tx-note">{tx.note || (showAccount ? tx.account : '')}</div>
       </div>
       <div className="tx-right">

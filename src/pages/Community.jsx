@@ -4,7 +4,7 @@ import { Modal } from '../components/ui'
 import { MOCK_COMMENTS, MOCK_TRENDING } from '../data/mock'
 
 export default function Community() {
-  const { posts, toggleVote, addPost } = useApp()
+  const { posts, toggleVote, addPost, t } = useApp()
   const [openComments, setOpenComments] = useState({})
   const [showCompose, setShowCompose] = useState(false)
 
@@ -15,10 +15,10 @@ export default function Community() {
     <div className="page">
       <div className="page-head">
         <div>
-          <h1 className="page-title">Community</h1>
-          <div className="page-sub">Real money talk from real people. Be kind, be useful.</div>
+          <h1 className="page-title">{t('community.title')}</h1>
+          <div className="page-sub">{t('community.subtitle')}</div>
         </div>
-        <button className="btn btn-primary" onClick={() => setShowCompose(true)}>+ New Post</button>
+        <button className="btn btn-primary" onClick={() => setShowCompose(true)}>{t('community.newPost')}</button>
       </div>
 
       <div className="feed-layout">
@@ -33,8 +33,8 @@ export default function Community() {
                     ? <img src={p.author.avatar} alt="" onError={(e) => { e.currentTarget.style.visibility = 'hidden' }} />
                     : <span className="tx-icon" style={{ borderRadius: '50%' }}>🙂</span>}
                   <div>
-                    <div className="post-author">{p.author.name}{p.mine ? ' (you)' : ''}</div>
-                    <div className="post-when">{p.created_at}</div>
+                    <div className="post-author">{p.author.name}{p.mine ? ` ${t('community.you')}` : ''}</div>
+                    <div className="post-when">{p.created_at === 'Just now' ? t('community.justNow') : p.created_at}</div>
                   </div>
                   {p.tag && <span className="post-tag">#{p.tag}</span>}
                 </div>
@@ -49,13 +49,13 @@ export default function Community() {
                     ▲ {p.upvotes.toLocaleString()}
                   </button>
                   <button className="chip-btn" onClick={() => toggleComments(p.post_id)} aria-expanded={!!open}>
-                    💬 {p.comments_count} comments
+                    💬 {t('community.comments', { n: p.comments_count })}
                   </button>
                 </div>
                 {open && (
                   <div className="comments">
                     {comments.length === 0 && (
-                      <div className="comment"><div className="comment-text">No comments yet — be the first!</div></div>
+                      <div className="comment"><div className="comment-text">{t('community.noComments')}</div></div>
                     )}
                     {comments.map((c, i) => (
                       <div className="comment" key={i}>
@@ -65,7 +65,7 @@ export default function Community() {
                     ))}
                     {comments.length > 0 && comments.length < p.comments_count && (
                       <div className="post-when" style={{ textAlign: 'center' }}>
-                        Showing {comments.length} of {p.comments_count} comments
+                        {t('community.showing', { shown: comments.length, total: p.comments_count })}
                       </div>
                     )}
                   </div>
@@ -78,12 +78,12 @@ export default function Community() {
         <aside>
           <div className="card trending">
             <div className="card-head" style={{ marginBottom: 6 }}>
-              <div className="card-title">🔥 Trending topics</div>
+              <div className="card-title">{t('community.trending')}</div>
             </div>
-            {MOCK_TRENDING.map((t) => (
-              <div className="trend-row" key={t.tag}>
-                <span className="trend-tag">{t.tag}</span>
-                <span className="trend-count">{t.posts} posts</span>
+            {MOCK_TRENDING.map((tp) => (
+              <div className="trend-row" key={tp.tag}>
+                <span className="trend-tag">{tp.tag}</span>
+                <span className="trend-count">{t('community.posts', { n: tp.posts })}</span>
               </div>
             ))}
           </div>
@@ -96,14 +96,15 @@ export default function Community() {
 }
 
 function ComposeModal({ onAdd, onClose }) {
+  const { t } = useApp()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [tag, setTag] = useState('General')
   const [touched, setTouched] = useState(false)
   const [saving, setSaving] = useState(false)
 
-  const titleError = !title.trim() ? 'Please enter a title' : null
-  const contentError = !content.trim() ? 'Please write something to share' : null
+  const titleError = !title.trim() ? t('community.errTitle') : null
+  const contentError = !content.trim() ? t('community.errContent') : null
   const invalid = Boolean(titleError || contentError)
 
   const submit = (e) => {
@@ -118,31 +119,31 @@ function ComposeModal({ onAdd, onClose }) {
   }
 
   return (
-    <Modal title="Share with the community" onClose={onClose}>
+    <Modal title={t('community.composeTitle')} onClose={onClose}>
       <form onSubmit={submit} noValidate>
         <div className={`field${touched && titleError ? ' invalid' : ''}`}>
-          <label htmlFor="post-title">Title</label>
-          <input id="post-title" autoFocus placeholder="A clear, helpful headline…" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <label htmlFor="post-title">{t('community.titleField')}</label>
+          <input id="post-title" autoFocus placeholder={t('community.titlePlaceholder')} value={title} onChange={(e) => setTitle(e.target.value)} />
           {touched && titleError && <div className="field-error">{titleError}</div>}
         </div>
         <div className={`field${touched && contentError ? ' invalid' : ''}`}>
-          <label htmlFor="post-content">Your story or question</label>
-          <textarea id="post-content" rows="4" placeholder="Share the details — numbers welcome!" value={content} onChange={(e) => setContent(e.target.value)} />
+          <label htmlFor="post-content">{t('community.body')}</label>
+          <textarea id="post-content" rows="4" placeholder={t('community.bodyPlaceholder')} value={content} onChange={(e) => setContent(e.target.value)} />
           {touched && contentError && <div className="field-error">{contentError}</div>}
         </div>
         <div className="field">
-          <label htmlFor="post-tag">Topic</label>
+          <label htmlFor="post-tag">{t('community.topic')}</label>
           <select id="post-tag" value={tag} onChange={(e) => setTag(e.target.value)}>
-            {['General', 'Saving', 'Investing', 'Budgeting', 'Freelance', 'FirstJobber'].map((t) => (
-              <option key={t}>{t}</option>
+            {['General', 'Saving', 'Investing', 'Budgeting', 'Freelance', 'FirstJobber'].map((tg) => (
+              <option key={tg}>{tg}</option>
             ))}
           </select>
         </div>
         <div className="form-actions">
-          <button type="button" className="btn btn-ghost" onClick={onClose} disabled={saving}>Cancel</button>
+          <button type="button" className="btn btn-ghost" onClick={onClose} disabled={saving}>{t('common.cancel')}</button>
           <button type="submit" className="btn btn-primary" disabled={saving || (touched && invalid)}>
             {saving && <span className="spinner" />}
-            {saving ? 'Posting…' : 'Post'}
+            {saving ? t('community.posting') : t('community.post')}
           </button>
         </div>
       </form>

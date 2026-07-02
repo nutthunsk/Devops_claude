@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import {
   MOCK_USER, MOCK_ACCOUNTS, MOCK_TRANSACTIONS, MOCK_GOALS, MOCK_POSTS,
 } from './data/mock'
+import { makeT, LANGS } from './i18n'
 
 const AppContext = createContext(null)
 export const useApp = () => useContext(AppContext)
@@ -11,22 +12,33 @@ const systemPrefersDark = () =>
   window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 const resolveTheme = (t) => (t === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : t)
 
+// All mock data is denominated in THB (the base). `rate` is how many units
+// of the currency equal 1 THB, so a stored baht value converts by multiplying.
 export const CURRENCIES = {
-  THB: { symbol: '฿', label: 'Thai Baht' },
-  USD: { symbol: '$', label: 'US Dollar' },
-  EUR: { symbol: '€', label: 'Euro' },
-  GBP: { symbol: '£', label: 'British Pound' },
-  JPY: { symbol: '¥', label: 'Japanese Yen' },
+  THB: { symbol: '฿', label: 'Thai Baht', rate: 1, decimals: 2 },
+  USD: { symbol: '$', label: 'US Dollar', rate: 1 / 36.5, decimals: 2 },
+  EUR: { symbol: '€', label: 'Euro', rate: 1 / 39.5, decimals: 2 },
+  GBP: { symbol: '£', label: 'British Pound', rate: 1 / 46, decimals: 2 },
+  JPY: { symbol: '¥', label: 'Japanese Yen', rate: 1 / 0.235, decimals: 0 },
 }
-// Module-level symbol kept in sync by AppProvider so every existing
+const initialCcy = CURRENCIES[localStorage.getItem('ws-currency')] ? localStorage.getItem('ws-currency') : 'THB'
+// Module-level state kept in sync by AppProvider so every existing
 // fmtMoney(x) call reflects the chosen currency without a prop drill.
-let CURRENCY_SYMBOL = CURRENCIES[localStorage.getItem('ws-currency')]?.symbol || '฿'
+let CURRENCY = CURRENCIES[initialCcy]
 
-export const fmtMoney = (n, decimals = 0) =>
-  CURRENCY_SYMBOL + Number(n).toLocaleString('en-US', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  })
+// Convert a base-THB amount into the active currency (numeric, no symbol).
+export const convert = (n) => Number(n) * CURRENCY.rate
+// Convert an amount typed in the active currency back to the THB base for storage.
+export const toBase = (n) => Number(n) / CURRENCY.rate
+export const activeCurrency = () => CURRENCY
+
+export const fmtMoney = (n, decimals = 0) => {
+  const d = Math.min(decimals, CURRENCY.decimals)
+  return (
+    CURRENCY.symbol +
+    convert(n).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d })
+  )
+}
 
 export const fmtDate = (iso) =>
   new Date(iso + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
@@ -53,7 +65,19 @@ export function AppProvider({ children }) {
     const saved = localStorage.getItem('ws-theme')
     return THEMES.includes(saved) ? saved : 'light'
   })
-  const [currency, setCurrencyState] = useState(() => localStorage.getItem('ws-currency') || 'THB')
+  const [currency, setCurrencyState] = useState(initialCcy)
+  const [lang, setLangState] = useState(() => {
+    const saved = localStorage.getItem('ws-lang')
+    return LANGS[saved] ? saved : 'en'
+  })
+
+  // Apply language to <html lang> and persist.
+  useEffect(() => {
+    document.documentElement.setAttribute('lang', lang)
+    localStorage.setItem('ws-lang', lang)
+  }, [lang])
+  const setLang = (l) => setLangState(LANGS[l] ? l : 'en')
+  const { t, tl } = useMemo(() => makeT(lang), [lang])
 
   // Apply the resolved theme to <html> so CSS variables swap app-wide,
   // and follow the OS setting live while in "system" mode.
@@ -67,10 +91,10 @@ export function AppProvider({ children }) {
     return () => mq.removeEventListener('change', apply)
   }, [theme])
 
-  const setTheme = (t) => setThemeState(THEMES.includes(t) ? t : 'light')
+  const setTheme = (th) => setThemeState(THEMES.includes(th) ? th : 'light')
   const setCurrency = (c) => {
     if (!CURRENCIES[c]) return
-    CURRENCY_SYMBOL = CURRENCIES[c].symbol
+    CURRENCY = CURRENCIES[c]
     setCurrencyState(c)
     localStorage.setItem('ws-currency', c)
   }
@@ -152,6 +176,7 @@ export function AppProvider({ children }) {
     posts, toggleVote, addPost,
     summary,
     theme, setTheme, currency, setCurrency, resetData,
+    lang, setLang, t, tl,
   }
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }

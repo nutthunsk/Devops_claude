@@ -6,40 +6,40 @@ import TransactionModal from '../components/TransactionModal'
 
 // Shared page for Income (type="income") and Expense (type="expense")
 export default function Transactions({ type }) {
-  const { transactions } = useApp()
+  const { transactions, t, tl } = useApp()
   const [showAdd, setShowAdd] = useState(false)
 
   const isExpense = type === 'expense'
   const items = useMemo(
-    () => transactions.filter((t) => t.type === type).sort((a, b) => b.date.localeCompare(a.date)),
+    () => transactions.filter((tx) => tx.type === type).sort((a, b) => b.date.localeCompare(a.date)),
     [transactions, type],
   )
   const byCategory = useMemo(() => {
     const map = new Map()
-    items.forEach((t) => map.set(t.category, (map.get(t.category) || 0) + t.amount))
-    return [...map].map(([label, value]) => ({ label, value }))
-  }, [items])
-  const total = items.reduce((s, t) => s + t.amount, 0)
+    items.forEach((tx) => map.set(tx.category, (map.get(tx.category) || 0) + tx.amount))
+    return [...map].map(([cat, value]) => ({ label: tl('cat', cat), value }))
+  }, [items, tl])
+  const total = items.reduce((s, tx) => s + tx.amount, 0)
 
   return (
     <div className="page">
       <div className="page-head">
         <div>
-          <h1 className="page-title">{isExpense ? 'Expenses' : 'Income'}</h1>
+          <h1 className="page-title">{isExpense ? t('tx.expenseTitle') : t('tx.incomeTitle')}</h1>
           <div className="page-sub">
             {items.length
-              ? <>{items.length} record{items.length > 1 ? 's' : ''} · total{' '}
+              ? <>{t('tx.records', { n: items.length, total: '' })}
                   <strong style={{ color: isExpense ? 'var(--negative-dark)' : 'var(--positive-dark)' }}>
                     {fmtMoney(total)}
                   </strong></>
-              : `Log your first ${type} to see the breakdown.`}
+              : isExpense ? t('tx.logFirstExpense') : t('tx.logFirstIncome')}
           </div>
         </div>
         <button
           className={`btn ${isExpense ? 'btn-danger' : 'btn-primary'}`}
           onClick={() => setShowAdd(true)}
         >
-          + Add {isExpense ? 'Expense' : 'Income'}
+          {isExpense ? t('common.addExpense') : t('common.addIncome')}
         </button>
       </div>
 
@@ -47,24 +47,24 @@ export default function Transactions({ type }) {
         <div className="card">
           <div className="card-head">
             <div>
-              <div className="card-title">By category</div>
-              <div className="card-sub">All records</div>
+              <div className="card-title">{t('tx.byCategory')}</div>
+              <div className="card-sub">{t('tx.allRecords')}</div>
             </div>
           </div>
           {byCategory.length ? (
-            <DonutChart data={byCategory} centerLabel="Total" size={168} />
+            <DonutChart data={byCategory} centerLabel={t('tx.total')} size={168} otherLabel={t('tx.otherLabel')} />
           ) : (
             <div className="empty-sub" style={{ textAlign: 'center', padding: '32px 0' }}>
-              Nothing to chart yet.
+              {t('tx.nothingToChart')}
             </div>
           )}
         </div>
 
         <div className="card">
           <div className="card-head">
-            <div className="card-title">History</div>
+            <div className="card-title">{t('tx.history')}</div>
           </div>
-          <TxList items={items} showAccount emptyText={`No ${type} records yet.`} />
+          <TxList items={items} showAccount emptyText={isExpense ? t('tx.noExpense') : t('tx.noIncome')} />
         </div>
       </div>
 

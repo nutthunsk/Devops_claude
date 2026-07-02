@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { fmtMoney } from '../store'
+import { fmtMoney, convert } from '../store'
 
 // Validated categorical order — fixed, assigned in sequence, never cycled.
 // Slots 2 & 6 sit below 3:1 on white: relief = the value legend beside each donut.
@@ -62,7 +62,7 @@ export function LineChart({ data, height = 220 }) {
             <g key={t}>
               <line x1={PAD.left} x2={W - PAD.right} y1={y} y2={y} stroke="var(--gridline)" strokeWidth="1" />
               <text x={PAD.left - 8} y={y + 3.5} textAnchor="end" fontSize="10.5" fill="var(--ink-muted)">
-                {compact(t)}
+                {compact(convert(t))}
               </text>
             </g>
           )
@@ -84,7 +84,7 @@ export function LineChart({ data, height = 220 }) {
         {/* end marker + direct label on the endpoint only */}
         <circle cx={last.x} cy={last.y} r="4.5" fill="var(--series-1)" stroke="var(--surface)" strokeWidth="2" />
         <text x={last.x + 9} y={last.y + 3.5} fontSize="11" fontWeight="700" fill="var(--ink)">
-          {compact(last.value)}
+          {compact(convert(last.value))}
         </text>
       </svg>
       {hp && (
@@ -107,7 +107,7 @@ function niceStep(raw) {
 }
 
 /* ---------------- Donut chart (part-to-whole, categorical) ---------------- */
-export function DonutChart({ data, centerLabel = 'Total', size = 176, maxSlices = 6 }) {
+export function DonutChart({ data, centerLabel = 'Total', size = 176, maxSlices = 6, otherLabel = 'Other' }) {
   const [hover, setHover] = useState(null)
 
   const slices = useMemo(() => {
@@ -116,7 +116,7 @@ export function DonutChart({ data, centerLabel = 'Total', size = 176, maxSlices 
     if (sorted.length > maxSlices) {
       const head = sorted.slice(0, maxSlices - 1)
       const rest = sorted.slice(maxSlices - 1).reduce((s, d) => s + d.value, 0)
-      items = [...head, { label: 'Other', value: rest, isOther: true }]
+      items = [...head, { label: otherLabel, value: rest, isOther: true }]
     }
     const total = items.reduce((s, d) => s + d.value, 0)
     let angle = -Math.PI / 2
@@ -130,7 +130,7 @@ export function DonutChart({ data, centerLabel = 'Total', size = 176, maxSlices 
         frac, start, end: angle, total,
       }
     })
-  }, [data, maxSlices])
+  }, [data, maxSlices, otherLabel])
 
   const total = slices.reduce((s, d) => s + d.value, 0)
   const R = size / 2
