@@ -28,8 +28,8 @@ export default function Dashboard({ onNav }) {
           <h1 className="page-title">{t('dash.greeting', { name: firstName })}</h1>
           <div className="page-sub">{t('dash.glance')}</div>
         </div>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <button className="btn btn-ghost" onClick={() => setModal('income')}>{t('common.addIncome')}</button>
+        <div className="page-actions">
+          <button className="btn btn-income" onClick={() => setModal('income')}>{t('common.addIncome')}</button>
           <button className="btn btn-danger" onClick={() => setModal('expense')}>{t('common.addExpense')}</button>
         </div>
       </div>

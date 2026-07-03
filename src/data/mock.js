@@ -33,9 +33,11 @@ export const MOCK_TRANSACTIONS = [
 ]
 
 export const MOCK_GOALS = [
-  { id: 'goal_01', name: 'Emergency Fund', emoji: '🛟', target: 100000, current: 65000, monthly: 5000 },
-  { id: 'goal_02', name: 'Japan Trip 2027', emoji: '🗾', target: 50000, current: 22000, monthly: 4000 },
-  { id: 'goal_03', name: 'New MacBook Pro', emoji: '💻', target: 60000, current: 48000, monthly: 3000 },
+  { id: 'goal_01', name: 'Emergency Fund', emoji: '🛟', target: 100000, current: 65000, monthly: 5000, category: 'savings' },
+  { id: 'goal_02', name: 'Japan Trip 2027', emoji: '🗾', target: 50000, current: 22000, monthly: 4000, category: 'savings' },
+  { id: 'goal_03', name: 'New MacBook Pro', emoji: '💻', target: 60000, current: 48000, monthly: 3000, category: 'savings' },
+  { id: 'goal_04', name: 'SET50 Index DCA', emoji: '📈', target: 120000, current: 54000, monthly: 3000, category: 'investment' },
+  { id: 'goal_05', name: 'Global ETF Portfolio', emoji: '🌍', target: 200000, current: 61500, monthly: 5000, category: 'investment' },
 ]
 
 export const MOCK_PORTFOLIO = [

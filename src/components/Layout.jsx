@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useApp } from '../store'
 
 // id maps to a nav key; `tkey` points at the i18n label group.
+// In the sidebar, Settings renders as an icon button in the footer next to
+// the user chip (not in this list); the mobile bottom nav still lists it.
 export const PAGES = [
   { id: 'dashboard', tkey: 'dashboard' },
   { id: 'accounts', tkey: 'accounts' },
@@ -79,7 +81,7 @@ export default function Layout({ page, onNav, children }) {
         </button>
         <div className="brand"><BrandMark /> <span className="label">WealthShare</span></div>
         <nav className="nav-list" aria-label="Main">
-          {PAGES.map((p) => (
+          {PAGES.filter((p) => p.id !== 'settings').map((p) => (
             <button
               key={p.id}
               className={`nav-item${page === p.id ? ' active' : ''}`}
@@ -92,12 +94,23 @@ export default function Layout({ page, onNav, children }) {
           ))}
         </nav>
         <div className="sidebar-foot">
-          <div className="user-chip" title={collapsed ? user.name : undefined}>
-            <img src={user.avatar} alt="" onError={(e) => { e.currentTarget.style.visibility = 'hidden' }} />
-            <div className="u-info">
-              <div className="u-name">{user.name}</div>
-              <div className="u-mail">{user.email}</div>
+          <div className="foot-row">
+            <div className="user-chip" title={collapsed ? user.name : undefined}>
+              <img src={user.avatar} alt="" onError={(e) => { e.currentTarget.style.visibility = 'hidden' }} />
+              <div className="u-info">
+                <div className="u-name">{user.name}</div>
+                <div className="u-mail">{user.email}</div>
+              </div>
             </div>
+            <button
+              className={`settings-btn${page === 'settings' ? ' active' : ''}`}
+              onClick={() => onNav('settings')}
+              aria-current={page === 'settings' ? 'page' : undefined}
+              aria-label={t('nav.settings')}
+              title={t('nav.settings')}
+            >
+              <NavIcon id="settings" />
+            </button>
           </div>
           <button className="logout-btn" onClick={logout} title={collapsed ? t('common.signOut') : undefined}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

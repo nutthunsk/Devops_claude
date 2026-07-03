@@ -4,7 +4,7 @@ import { fmtMoney, fmtDate, catEmoji, useApp } from '../store'
 /* ---------------- Stat tile ---------------- */
 export function StatTile({ label, value, delta, deltaDir, hero, tone, vs }) {
   return (
-    <div className="card stat-tile">
+    <div className={`card stat-tile${hero ? ' vault' : ''}`}>
       <div className="stat-label">{label}</div>
       <div className={`stat-value${hero ? ' hero' : ''}`} style={tone ? { color: tone } : undefined}>
         {value}

@@ -23,10 +23,11 @@
   display: flex;
   flex-direction: column;
   color: #ecfdf5;
+  /* Same "vault green" family as the dashboard balance card */
   background:
     radial-gradient(1100px 520px at 12% -10%, #14b8a6 0%, transparent 55%),
-    radial-gradient(900px 600px at 110% 120%, #0b5f58 0%, transparent 55%),
-    linear-gradient(155deg, #0f766e 0%, #0b5048 100%);
+    radial-gradient(900px 600px at 110% 120%, #0a4f47 0%, transparent 55%),
+    linear-gradient(155deg, #0f766e 0%, #052e2b 100%);
   isolation: isolate;
 }
 /* soft moving sheen — quiet, brand-appropriate */
@@ -50,7 +51,9 @@
 
 .au-hero-copy { margin-top: auto; }
 .au-headline {
-  font-size: 34px; font-weight: 800; line-height: 1.12; letter-spacing: -0.025em;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.4vw + 14px, 36px);
+  font-weight: 700; line-height: 1.12; letter-spacing: -0.025em;
   color: #fff; max-width: 12ch;
 }
 .au-headline em { font-style: normal; color: #6ee7b7; }
@@ -67,8 +70,14 @@
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 20px 40px -24px rgba(0, 0, 0, 0.5);
 }
-.au-tile-label { font-size: 12.5px; color: #b6efe4; font-weight: 500; }
-.au-tile-value { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.02em; margin-top: 2px; }
+.au-tile-label {
+  font-size: 11.5px; color: #b6efe4; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.07em;
+}
+.au-tile-value {
+  font-family: var(--font-display); font-variant-numeric: tabular-nums;
+  font-size: 28px; font-weight: 700; color: #fff; letter-spacing: -0.02em; margin-top: 3px;
+}
 .au-tile-delta { font-size: 12.5px; font-weight: 600; color: #6ee7b7; margin-top: 3px; }
 .au-tile-delta .vs { color: #9adfd0; font-weight: 400; }
 .au-spark { display: block; width: 100%; height: 46px; margin-top: 12px; }
@@ -81,7 +90,10 @@
   border-radius: 13px; padding: 11px 13px;
 }
 .au-chip-label { font-size: 11.5px; color: #b6efe4; display: flex; align-items: center; gap: 5px; }
-.au-chip-value { font-size: 16px; font-weight: 700; color: #fff; margin-top: 3px; }
+.au-chip-value {
+  font-family: var(--font-display); font-variant-numeric: tabular-nums;
+  font-size: 16px; font-weight: 700; color: #fff; margin-top: 3px;
+}
 .au-dot { width: 7px; height: 7px; border-radius: 50%; }
 .au-dot.up { background: #6ee7b7; }
 .au-dot.down { background: #fca5a5; }
@@ -102,7 +114,11 @@
 .au-form-brand { display: none; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; margin-bottom: 22px; }
 .au-form-brand .brand-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--primary); color: #fff; display: grid; place-items: center; flex: none; }
 
-.au-title { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+.au-title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 1.4vw + 17px, 25px);
+  font-weight: 700; letter-spacing: -0.02em;
+}
 .au-lede { color: var(--ink-2); font-size: 14px; margin-top: 6px; }
 
 .au-form .auth-tabs { margin: 22px 0 20px; }

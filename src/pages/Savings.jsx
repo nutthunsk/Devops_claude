@@ -4,9 +4,17 @@ import { DonutChart } from '../components/charts'
 import { Modal, EmptyState } from '../components/ui'
 import { MOCK_PORTFOLIO } from '../data/mock'
 
+// Older goals in storage predate the category field — treat them as savings.
+const goalCategory = (g) => g.category || 'savings'
+
 export default function Savings() {
   const { goals, addGoal, deleteGoal, t, tl } = useApp()
   const [showAdd, setShowAdd] = useState(false)
+  const [category, setCategory] = useState('savings')
+  const isInvest = category === 'investment'
+
+  const shownGoals = goals.filter((g) => goalCategory(g) === category)
+
   const portfolioTotal = MOCK_PORTFOLIO.reduce((s, d) => s + d.value, 0)
   const portfolioData = useMemo(
     () => MOCK_PORTFOLIO.map((d) => ({ label: tl('portfolio', d.label), value: d.value })),
@@ -20,28 +28,47 @@ export default function Savings() {
           <h1 className="page-title">{t('savings.title')}</h1>
           <div className="page-sub">{t('savings.subtitle')}</div>
         </div>
-        {goals.length > 0 && (
+        {shownGoals.length > 0 && (
           <button className="btn btn-primary" onClick={() => setShowAdd(true)}>{t('savings.newGoal')}</button>
         )}
       </div>
 
-      <div className="dash-grid" style={{ gridTemplateColumns: 'minmax(0, 7fr) minmax(0, 5fr)' }}>
+      <div className="dash-grid savings-grid">
         <div className="card">
           <div className="card-head">
             <div>
-              <div className="card-title">{t('savings.goals')}</div>
-              <div className="card-sub">{goals.length ? t('savings.activeGoals', { n: goals.length }) : ' '}</div>
+              <div className="card-title">{isInvest ? t('savings.investGoals') : t('savings.goals')}</div>
+              <div className="card-sub">{shownGoals.length ? t('savings.activeGoals', { n: shownGoals.length }) : ' '}</div>
+            </div>
+            {/* Switch between saving goals and investment goals */}
+            <div className="seg" role="tablist" aria-label={t('savings.goalType')}>
+              <button
+                role="tab"
+                aria-selected={!isInvest}
+                className={!isInvest ? 'active' : ''}
+                onClick={() => setCategory('savings')}
+              >
+                {t('savings.catSavings')}
+              </button>
+              <button
+                role="tab"
+                aria-selected={isInvest}
+                className={isInvest ? 'active' : ''}
+                onClick={() => setCategory('investment')}
+              >
+                {t('savings.catInvestment')}
+              </button>
             </div>
           </div>
-          {goals.length === 0 ? (
+          {shownGoals.length === 0 ? (
             <EmptyState
-              title={t('savings.emptyTitle')}
-              sub={t('savings.emptySub')}
-              cta={t('savings.emptyCta')}
+              title={isInvest ? t('savings.emptyInvestTitle') : t('savings.emptyTitle')}
+              sub={isInvest ? t('savings.emptyInvestSub') : t('savings.emptySub')}
+              cta={isInvest ? t('savings.emptyInvestCta') : t('savings.emptyCta')}
               onCta={() => setShowAdd(true)}
             />
           ) : (
-            goals.map((g) => {
+            shownGoals.map((g) => {
               const pct = Math.min(100, Math.round((g.current / g.target) * 100))
               return (
                 <div className="goal-row" key={g.id}>
@@ -63,7 +90,7 @@ export default function Savings() {
                     <div className="meter-fill" style={{ width: `${pct}%` }} />
                   </div>
                   <div className="goal-amounts">
-                    <span>{t('savings.saved', { amount: fmtMoney(g.current) })}</span>
+                    <span>{t(isInvest ? 'savings.investedAmount' : 'savings.saved', { amount: fmtMoney(g.current) })}</span>
                     <span>{t('savings.of', { amount: fmtMoney(g.target) })}</span>
                   </div>
                 </div>
@@ -83,19 +110,21 @@ export default function Savings() {
         </div>
       </div>
 
-      {showAdd && <AddGoalModal onAdd={addGoal} onClose={() => setShowAdd(false)} />}
+      {showAdd && <AddGoalModal initialCategory={category} onAdd={addGoal} onClose={() => setShowAdd(false)} />}
     </div>
   )
 }
 
-function AddGoalModal({ onAdd, onClose }) {
+function AddGoalModal({ initialCategory, onAdd, onClose }) {
   const { currency, t } = useApp()
+  const [category, setCategory] = useState(initialCategory || 'savings')
   const [name, setName] = useState('')
   const [target, setTarget] = useState('')
   const [current, setCurrent] = useState('')
   const [touched, setTouched] = useState(false)
   const [saving, setSaving] = useState(false)
   const symbol = CURRENCIES[currency].symbol
+  const isInvest = category === 'investment'
 
   const nameError = !name.trim() ? t('savings.errName') : null
   const targetNum = parseFloat(target)
@@ -110,17 +139,47 @@ function AddGoalModal({ onAdd, onClose }) {
     if (invalid || saving) return
     setSaving(true)
     setTimeout(() => {
-      onAdd({ name: name.trim(), emoji: '🎯', target: toBase(targetNum), current: toBase(currentNum) })
+      onAdd({
+        name: name.trim(),
+        emoji: isInvest ? '📈' : '🎯',
+        target: toBase(targetNum),
+        current: toBase(currentNum),
+        category,
+      })
       onClose()
     }, 500)
   }
 
   return (
-    <Modal title={t('savings.modalTitle')} onClose={onClose}>
+    <Modal title={isInvest ? t('savings.modalTitleInvest') : t('savings.modalTitle')} onClose={onClose}>
       <form onSubmit={submit} noValidate>
+        <div className="type-toggle" role="radiogroup" aria-label={t('savings.goalType')}>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={!isInvest}
+            className={!isInvest ? 'on-income' : ''}
+            onClick={() => setCategory('savings')}
+          >
+            🎯 {t('savings.catSavings')}
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={isInvest}
+            className={isInvest ? 'on-income' : ''}
+            onClick={() => setCategory('investment')}
+          >
+            📈 {t('savings.catInvestment')}
+          </button>
+        </div>
         <div className={`field${touched && nameError ? ' invalid' : ''}`}>
           <label htmlFor="goal-name">{t('savings.goalName')}</label>
-          <input id="goal-name" autoFocus placeholder="Emergency Fund" value={name} onChange={(e) => setName(e.target.value)} />
+          <input
+            id="goal-name" autoFocus
+            placeholder={isInvest ? t('savings.investNamePlaceholder') : 'Emergency Fund'}
+            value={name} onChange={(e) => setName(e.target.value)}
+          />
           {touched && nameError && <div className="field-error">{nameError}</div>}
         </div>
         <div className="field-row">
@@ -130,7 +189,7 @@ function AddGoalModal({ onAdd, onClose }) {
             {touched && targetError && <div className="field-error">{targetError}</div>}
           </div>
           <div className={`field${touched && currentError ? ' invalid' : ''}`}>
-            <label htmlFor="goal-current">{t('savings.already')} ({symbol})</label>
+            <label htmlFor="goal-current">{t(isInvest ? 'savings.alreadyInvested' : 'savings.already')} ({symbol})</label>
             <input id="goal-current" type="number" inputMode="decimal" placeholder="0" value={current} onChange={(e) => setCurrent(e.target.value)} />
             {touched && currentError && <div className="field-error">{currentError}</div>}
           </div>
