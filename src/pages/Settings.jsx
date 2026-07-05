@@ -3,7 +3,7 @@ import { useApp, CURRENCIES, fmtMoney } from '../store'
 import { LANGS } from '../i18n'
 
 export default function Settings() {
-  const { user, updateProfile, theme, setTheme, currency, setCurrency, lang, setLang, resetData, t, tl } = useApp()
+  const { user, updateProfile, theme, setTheme, currency, setCurrency, lang, setLang, resetData, logout, t, tl } = useApp()
 
   const themeOptions = [
     { id: 'light', label: t('settings.light'), hint: t('settings.lightHint') },
@@ -98,6 +98,15 @@ export default function Settings() {
 
         {/* Data & privacy */}
         <DataSection onReset={resetData} t={t} />
+
+        {/* Sign out — the sidebar (and its logout button) is hidden on mobile,
+            so Settings carries an always-available exit. */}
+        <button className="btn btn-ghost settings-logout" onClick={logout}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+          </svg>
+          {t('common.signOut')}
+        </button>
 
         <div className="settings-about">{t('settings.about')}</div>
       </div>

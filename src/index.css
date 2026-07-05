@@ -49,11 +49,6 @@
   /* Display face for headings and money figures (Thai falls back to Noto Sans Thai) */
   --font-display: 'Space Grotesk', 'Inter', 'Noto Sans Thai', system-ui, sans-serif;
 
-  /* FinTech signature: the "vault" balance card */
-  --vault-grad: linear-gradient(140deg, #0e7268 0%, #0a4f47 48%, #052e2b 100%);
-  --vault-ink: #ecfdf5;
-  --vault-ink-soft: #97d8ca;
-
   /* Income action (solid green, distinct from the teal primary) */
   --btn-income: #059669;
   --btn-income-hover: #047857;
@@ -306,45 +301,15 @@ h1, h2, h3, h4 { margin: 0; }
 .stat-delta.down { color: var(--negative-dark); }
 .stat-delta .vs { color: var(--ink-muted); font-weight: 400; }
 
-/* Signature: the total balance rendered as a deep-green "vault" card */
-.stat-tile.vault {
-  position: relative;
-  overflow: hidden;
-  background: var(--vault-grad);
-  border-color: rgba(255, 255, 255, 0.08);
-  color: var(--vault-ink);
-  isolation: isolate;
-}
-.stat-tile.vault::before {
-  content: '';
-  position: absolute;
-  top: -55%; right: -18%;
-  width: 65%; aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.14), transparent);
-  z-index: -1;
-}
-.stat-tile.vault::after {
-  content: '';
-  position: absolute;
-  bottom: -40%; left: -12%;
-  width: 55%; aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(20, 184, 166, 0.35), transparent);
-  z-index: -1;
-}
-.stat-tile.vault .stat-label { color: var(--vault-ink-soft); }
-.stat-tile.vault .stat-value { color: #fff; }
-.stat-tile.vault .stat-delta.up { color: #6ee7b7; }
-.stat-tile.vault .stat-delta.down { color: #fca5a5; }
-.stat-tile.vault .stat-delta .vs { color: var(--vault-ink-soft); }
-
 .dash-grid {
   display: grid;
   grid-template-columns: 1.25fr 1fr 1fr;
   gap: 16px;
   align-items: start;
 }
+
+/* Income/Expense page: category donut + history split */
+.dash-grid.tx-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
 
 /* Savings & Investment page: goals + portfolio split */
 .savings-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
@@ -692,11 +657,12 @@ h1, h2, h3, h4 { margin: 0; }
 .field input:disabled { background: var(--bg); color: var(--ink-muted); cursor: not-allowed; }
 .save-flash { color: var(--positive-dark); font-weight: 600; font-size: 13px; align-self: center; }
 .settings-about { text-align: center; color: var(--ink-muted); font-size: 12px; padding: 4px 0 8px; }
+.settings-logout { width: 100%; }
+.settings-logout:hover { background: none; border-color: var(--negative); color: var(--negative); }
 
 /* ============ Responsive ============ */
 @media (max-width: 1020px) {
   .kpi-row { grid-template-columns: repeat(2, 1fr); }
-  .kpi-row .vault { grid-column: 1 / -1; }
   .dash-grid { grid-template-columns: 1fr 1fr; }
   .dash-grid > .span-mobile { grid-column: 1 / -1; }
   .savings-grid { grid-template-columns: 1fr; }
@@ -713,8 +679,8 @@ h1, h2, h3, h4 { margin: 0; }
   }
   .kpi-row { grid-template-columns: 1fr 1fr; gap: 10px; }
   .stat-tile { padding: 15px 16px; }
-  .stat-tile.vault { padding: 18px; }
   .dash-grid { grid-template-columns: 1fr; }
+  .dash-grid.tx-grid { grid-template-columns: 1fr; }
 
   /* Keep inputs at 16px so mobile browsers don't zoom the page on focus */
   input, select, textarea { font-size: 16px; }

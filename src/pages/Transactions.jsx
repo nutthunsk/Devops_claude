@@ -35,15 +35,17 @@ export default function Transactions({ type }) {
               : isExpense ? t('tx.logFirstExpense') : t('tx.logFirstIncome')}
           </div>
         </div>
-        <button
-          className={`btn ${isExpense ? 'btn-danger' : 'btn-primary'}`}
-          onClick={() => setShowAdd(true)}
-        >
-          {isExpense ? t('common.addExpense') : t('common.addIncome')}
-        </button>
+        <div className="page-actions">
+          <button
+            className={`btn ${isExpense ? 'btn-danger' : 'btn-primary'}`}
+            onClick={() => setShowAdd(true)}
+          >
+            {isExpense ? t('common.addExpense') : t('common.addIncome')}
+          </button>
+        </div>
       </div>
 
-      <div className="dash-grid" style={{ gridTemplateColumns: 'minmax(0, 5fr) minmax(0, 7fr)' }}>
+      <div className="dash-grid tx-grid">
         <div className="card">
           <div className="card-head">
             <div>
