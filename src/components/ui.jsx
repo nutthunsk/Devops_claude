@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { fmtMoney, fmtDate, catEmoji, useApp } from '../store'
+import { fmtMoney, fmtDate, useApp } from '../store'
+import { CategoryIcon } from './icons'
 
 /* ---------------- Stat tile ---------------- */
 export function StatTile({ label, value, delta, deltaDir, hero, tone, vs }) {
@@ -64,11 +65,58 @@ export function SkeletonCard({ lines = 4, chart }) {
   )
 }
 
-export function PageSkeleton() {
+function SkeletonPageHead({ actions = 0 }) {
+  return (
+    <div className="page-head">
+      <div>
+        <Skeleton w={200} h={26} style={{ marginBottom: 8 }} />
+        <Skeleton w={280} h={14} />
+      </div>
+      {actions > 0 && (
+        <div className="page-actions">
+          {Array.from({ length: actions }).map((_, i) => (
+            <Skeleton key={i} w={130} h={40} style={{ borderRadius: 10 }} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Donut chart card — circle placeholder matching DonutChart size={168}
+function SkeletonDonutCard() {
+  return (
+    <div className="card">
+      <Skeleton w="45%" h={16} style={{ marginBottom: 6 }} />
+      <Skeleton w="60%" h={12} style={{ marginBottom: 20 }} />
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0' }}>
+        <Skeleton w={168} h={168} style={{ borderRadius: '50%' }} />
+      </div>
+      {Array.from({ length: 3 }).map((_, i) => (
+        <Skeleton key={i} w={`${70 - i * 10}%`} style={{ marginBottom: 10 }} />
+      ))}
+    </div>
+  )
+}
+
+// Transaction list rows — icon + two text lines + amount, like TxList
+function SkeletonTxRows({ rows = 5 }) {
+  return Array.from({ length: rows }).map((_, i) => (
+    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 0' }}>
+      <Skeleton w={38} h={38} style={{ borderRadius: 11, flex: 'none' }} />
+      <div style={{ flex: 1 }}>
+        <Skeleton w={`${55 - (i % 3) * 8}%`} style={{ marginBottom: 6 }} />
+        <Skeleton w="30%" h={11} />
+      </div>
+      <Skeleton w={72} h={15} style={{ flex: 'none' }} />
+    </div>
+  ))
+}
+
+function DashboardSkeleton() {
   return (
     <div className="page">
-      <Skeleton w={200} h={26} style={{ marginBottom: 8 }} />
-      <Skeleton w={280} h={14} style={{ marginBottom: 24 }} />
+      <SkeletonPageHead actions={2} />
       <div className="kpi-row">
         {Array.from({ length: 4 }).map((_, i) => (
           <div className="card stat-tile" key={i}>
@@ -79,11 +127,169 @@ export function PageSkeleton() {
       </div>
       <div className="dash-grid">
         <SkeletonCard chart />
-        <SkeletonCard chart />
-        <SkeletonCard lines={6} />
+        <SkeletonDonutCard />
+        <div className="card">
+          <Skeleton w="45%" h={16} style={{ marginBottom: 12 }} />
+          <SkeletonTxRows rows={5} />
+        </div>
       </div>
     </div>
   )
+}
+
+function AccountsSkeleton() {
+  return (
+    <div className="page">
+      <SkeletonPageHead actions={1} />
+      <div className="account-grid">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div className="card account-card" key={i}>
+            <Skeleton w={40} h={40} style={{ borderRadius: 11, marginBottom: 12 }} />
+            <Skeleton w="45%" h={11} style={{ marginBottom: 8 }} />
+            <Skeleton w="65%" h={15} style={{ marginBottom: 14 }} />
+            <Skeleton w="55%" h={22} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function TransactionsSkeleton() {
+  return (
+    <div className="page">
+      <SkeletonPageHead actions={1} />
+      <div className="dash-grid tx-grid">
+        <SkeletonDonutCard />
+        <div className="card">
+          <Skeleton w="35%" h={16} style={{ marginBottom: 12 }} />
+          <SkeletonTxRows rows={6} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function SavingsSkeleton() {
+  return (
+    <div className="page">
+      <SkeletonPageHead actions={1} />
+      <div className="dash-grid savings-grid">
+        <div className="card">
+          <div className="card-head">
+            <div style={{ flex: 1 }}>
+              <Skeleton w="40%" h={16} style={{ marginBottom: 6 }} />
+              <Skeleton w="30%" h={12} />
+            </div>
+            <Skeleton w={160} h={34} style={{ borderRadius: 10 }} />
+          </div>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div className="goal-row" key={i}>
+              <div className="goal-top">
+                <Skeleton w={`${45 - i * 8}%`} h={15} />
+                <Skeleton w={40} h={14} />
+              </div>
+              <Skeleton h={10} style={{ borderRadius: 999, marginTop: 10 }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
+                <Skeleton w={110} h={12} />
+                <Skeleton w={90} h={12} />
+              </div>
+            </div>
+          ))}
+        </div>
+        <SkeletonDonutCard />
+      </div>
+    </div>
+  )
+}
+
+function CommunitySkeleton() {
+  return (
+    <div className="page">
+      <SkeletonPageHead actions={1} />
+      <div className="feed-layout">
+        <div className="feed">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div className="card post-card" key={i}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                <Skeleton w={36} h={36} style={{ borderRadius: '50%', flex: 'none' }} />
+                <div style={{ flex: 1 }}>
+                  <Skeleton w={120} h={13} style={{ marginBottom: 6 }} />
+                  <Skeleton w={70} h={11} />
+                </div>
+                <Skeleton w={64} h={22} style={{ borderRadius: 999 }} />
+              </div>
+              <Skeleton w="70%" h={17} style={{ marginBottom: 10 }} />
+              <Skeleton style={{ marginBottom: 8 }} />
+              <Skeleton w="85%" style={{ marginBottom: 16 }} />
+              <div style={{ display: 'flex', gap: 8 }}>
+                <Skeleton w={72} h={30} style={{ borderRadius: 999 }} />
+                <Skeleton w={110} h={30} style={{ borderRadius: 999 }} />
+              </div>
+            </div>
+          ))}
+        </div>
+        <aside>
+          <div className="card trending">
+            <Skeleton w="55%" h={16} style={{ marginBottom: 16 }} />
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 2px' }}>
+                <Skeleton w={100} h={13} />
+                <Skeleton w={56} h={13} />
+              </div>
+            ))}
+          </div>
+        </aside>
+      </div>
+    </div>
+  )
+}
+
+function SettingsSkeleton() {
+  return (
+    <div className="page">
+      <SkeletonPageHead />
+      <div className="settings-stack">
+        <div className="card">
+          <Skeleton w="35%" h={16} style={{ marginBottom: 6 }} />
+          <Skeleton w="55%" h={12} style={{ marginBottom: 18 }} />
+          <div className="theme-grid">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} h={110} style={{ borderRadius: 12 }} />
+            ))}
+          </div>
+        </div>
+        {Array.from({ length: 2 }).map((_, i) => (
+          <div className="card" key={i}>
+            <Skeleton w="35%" h={16} style={{ marginBottom: 6 }} />
+            <Skeleton w="55%" h={12} style={{ marginBottom: 18 }} />
+            {Array.from({ length: 2 }).map((_, j) => (
+              <div key={j} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0' }}>
+                <div style={{ flex: 1 }}>
+                  <Skeleton w="30%" h={14} style={{ marginBottom: 6 }} />
+                  <Skeleton w="50%" h={11} />
+                </div>
+                <Skeleton w={140} h={36} style={{ borderRadius: 10 }} />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// Skeleton shaped like the page being loaded, keyed by nav page id
+export function PageSkeleton({ page = 'dashboard' }) {
+  switch (page) {
+    case 'accounts': return <AccountsSkeleton />
+    case 'income':
+    case 'expense': return <TransactionsSkeleton />
+    case 'savings': return <SavingsSkeleton />
+    case 'community': return <CommunitySkeleton />
+    case 'settings': return <SettingsSkeleton />
+    default: return <DashboardSkeleton />
+  }
 }
 
 /* ---------------- Empty state ---------------- */
@@ -122,7 +328,7 @@ export function TxRow({ tx, showAccount = true }) {
   const sign = tx.type === 'income' ? '+' : '−'
   return (
     <div className="tx-row">
-      <div className="tx-icon" aria-hidden="true">{catEmoji(tx.category)}</div>
+      <div className="tx-icon" aria-hidden="true"><CategoryIcon category={tx.category} /></div>
       <div className="tx-info">
         <div className="tx-cat">{tl('cat', tx.category)}</div>
         <div className="tx-note">{tx.note || (showAccount ? tx.account : '')}</div>

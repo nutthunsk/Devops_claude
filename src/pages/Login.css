@@ -156,6 +156,15 @@
 
 .au-submit { width: 100%; padding: 12px; margin-top: 4px; font-size: 15px; }
 
+.au-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 14px 0 10px;
+  color: var(--ink-muted); font-size: 12px;
+}
+.au-divider::before, .au-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--gridline);
+}
+
 .au-alt { text-align: center; margin-top: 16px; font-size: 13px; color: var(--ink-2); }
 .au-alt button { border: 0; background: none; color: var(--primary-dark); font-weight: 600; cursor: pointer; padding: 0; font-size: 13px; }
 .au-alt button:hover { text-decoration: underline; }

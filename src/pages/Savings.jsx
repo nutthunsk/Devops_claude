@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useApp, fmtMoney, toBase, CURRENCIES } from '../store'
 import { DonutChart } from '../components/charts'
 import { Modal, EmptyState } from '../components/ui'
+import { Icon } from '../components/icons'
 import { MOCK_PORTFOLIO } from '../data/mock'
 
 // Older goals in storage predate the category field — treat them as savings.
@@ -73,7 +74,10 @@ export default function Savings() {
               return (
                 <div className="goal-row" key={g.id}>
                   <div className="goal-top">
-                    <div className="goal-name">{g.emoji} {g.name}</div>
+                    <div className="goal-name" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <Icon name={isInvest ? 'trending-up' : 'target'} size={15} style={{ color: 'var(--primary-dark)', flex: 'none' }} />
+                      {g.name}
+                    </div>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
                       <span className="goal-pct">{pct}%</span>
                       <button
@@ -141,7 +145,6 @@ function AddGoalModal({ initialCategory, onAdd, onClose }) {
     setTimeout(() => {
       onAdd({
         name: name.trim(),
-        emoji: isInvest ? '📈' : '🎯',
         target: toBase(targetNum),
         current: toBase(currentNum),
         category,
@@ -161,7 +164,7 @@ function AddGoalModal({ initialCategory, onAdd, onClose }) {
             className={!isInvest ? 'on-income' : ''}
             onClick={() => setCategory('savings')}
           >
-            🎯 {t('savings.catSavings')}
+            {t('savings.catSavings')}
           </button>
           <button
             type="button"
@@ -170,7 +173,7 @@ function AddGoalModal({ initialCategory, onAdd, onClose }) {
             className={isInvest ? 'on-income' : ''}
             onClick={() => setCategory('investment')}
           >
-            📈 {t('savings.catInvestment')}
+            {t('savings.catInvestment')}
           </button>
         </div>
         <div className={`field${touched && nameError ? ' invalid' : ''}`}>

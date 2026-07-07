@@ -43,9 +43,11 @@ const en = {
     errPwShort: 'Password must be at least 6 characters',
     errNameRequired: 'Please enter your name',
     demoHint: 'Demo app — any valid email and a 6+ character password will work.',
+    or: 'or',
+    demoSignIn: 'Explore with a demo account',
   },
   dash: {
-    greeting: 'Good day, {name} 👋',
+    greeting: 'Good day, {name}',
     glance: "Here's your money at a glance — July 2026.",
     totalBalance: 'Total balance', incomeMonth: 'Income this month',
     expenseMonth: 'Expenses this month', savedMonth: 'Saved this month',
@@ -106,7 +108,7 @@ const en = {
   community: {
     title: 'Community',
     subtitle: 'Real money talk from real people. Be kind, be useful.',
-    newPost: '+ New Post', comments: '{n} comments', trending: '🔥 Trending topics',
+    newPost: '+ New Post', comments: '{n} comments', trending: 'Trending topics',
     posts: '{n} posts', showing: 'Showing {shown} of {total} comments',
     noComments: 'No comments yet — be the first!', you: '(you)', justNow: 'Just now',
     composeTitle: 'Share with the community', titleField: 'Title',
@@ -173,9 +175,11 @@ const th = {
     errPwShort: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร',
     errNameRequired: 'กรุณากรอกชื่อ',
     demoHint: 'แอปเดโม — ใช้อีเมลที่ถูกต้องและรหัสผ่าน 6 ตัวอักษรขึ้นไปได้เลย',
+    or: 'หรือ',
+    demoSignIn: 'ลองใช้ด้วยบัญชีเดโม',
   },
   dash: {
-    greeting: 'สวัสดี {name} 👋',
+    greeting: 'สวัสดี {name}',
     glance: 'สรุปการเงินของคุณ — กรกฎาคม 2026',
     totalBalance: 'ยอดเงินรวม', incomeMonth: 'รายรับเดือนนี้',
     expenseMonth: 'รายจ่ายเดือนนี้', savedMonth: 'เงินออมเดือนนี้',
@@ -236,7 +240,7 @@ const th = {
   community: {
     title: 'ชุมชน',
     subtitle: 'เรื่องเงินจริงจากคนจริง มีน้ำใจและเป็นประโยชน์',
-    newPost: '+ โพสต์ใหม่', comments: '{n} ความคิดเห็น', trending: '🔥 หัวข้อยอดนิยม',
+    newPost: '+ โพสต์ใหม่', comments: '{n} ความคิดเห็น', trending: 'หัวข้อยอดนิยม',
     posts: '{n} โพสต์', showing: 'แสดง {shown} จาก {total} ความคิดเห็น',
     noComments: 'ยังไม่มีความคิดเห็น — เป็นคนแรกเลย!', you: '(คุณ)', justNow: 'เมื่อสักครู่',
     composeTitle: 'แบ่งปันกับชุมชน', titleField: 'หัวข้อ',

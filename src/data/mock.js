@@ -33,11 +33,11 @@ export const MOCK_TRANSACTIONS = [
 ]
 
 export const MOCK_GOALS = [
-  { id: 'goal_01', name: 'Emergency Fund', emoji: '🛟', target: 100000, current: 65000, monthly: 5000, category: 'savings' },
-  { id: 'goal_02', name: 'Japan Trip 2027', emoji: '🗾', target: 50000, current: 22000, monthly: 4000, category: 'savings' },
-  { id: 'goal_03', name: 'New MacBook Pro', emoji: '💻', target: 60000, current: 48000, monthly: 3000, category: 'savings' },
-  { id: 'goal_04', name: 'SET50 Index DCA', emoji: '📈', target: 120000, current: 54000, monthly: 3000, category: 'investment' },
-  { id: 'goal_05', name: 'Global ETF Portfolio', emoji: '🌍', target: 200000, current: 61500, monthly: 5000, category: 'investment' },
+  { id: 'goal_01', name: 'Emergency Fund', target: 100000, current: 65000, monthly: 5000, category: 'savings' },
+  { id: 'goal_02', name: 'Japan Trip 2027', target: 50000, current: 22000, monthly: 4000, category: 'savings' },
+  { id: 'goal_03', name: 'New MacBook Pro', target: 60000, current: 48000, monthly: 3000, category: 'savings' },
+  { id: 'goal_04', name: 'SET50 Index DCA', target: 120000, current: 54000, monthly: 3000, category: 'investment' },
+  { id: 'goal_05', name: 'Global ETF Portfolio', target: 200000, current: 61500, monthly: 5000, category: 'investment' },
 ]
 
 export const MOCK_PORTFOLIO = [
@@ -105,7 +105,7 @@ export const MOCK_POSTS = [
 
 export const MOCK_COMMENTS = {
   post_101: [
-    { author: 'BahtByBaht', text: 'The auto-transfer trick is the whole game. If I can see the money, I will spend it. 😅', when: '1 hour ago' },
+    { author: 'BahtByBaht', text: 'The auto-transfer trick is the whole game. If I can see the money, I will spend it.', when: '1 hour ago' },
     { author: 'NidNoi', text: 'Congrats! Did you count your employer pension contributions in the 20%?', when: '1 hour ago' },
     { author: 'PennySaver', text: '@NidNoi No — pension is on top. The 20% is purely liquid savings.', when: '45 min ago' },
   ],
@@ -114,7 +114,7 @@ export const MOCK_COMMENTS = {
     { author: 'DCA_Dan', text: 'Averaging down with house money is how a drawdown becomes a disaster. Separate the goals first.', when: '3 hours ago' },
   ],
   post_103: [
-    { author: 'LunchLady', text: 'Recipe rotation please! 🙏', when: '8 hours ago' },
+    { author: 'LunchLady', text: 'Recipe rotation please!', when: '8 hours ago' },
     { author: 'FIREby40', text: 'Posted! 5 mains × 2 sauces, shop once. Search "90-day rotation" in my profile.', when: '7 hours ago' },
   ],
   post_104: [

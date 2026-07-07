@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useApp, fmtMoney, toBase, CURRENCIES } from '../store'
 import { Modal, EmptyState } from '../components/ui'
+import { AccountTypeIcon } from '../components/icons'
 
-const TYPE_ICONS = { 'Bank Account': '🏦', Cash: '💵', 'Credit Card': '💳', 'E-Wallet': '📱', Investment: '📈' }
-const ACCOUNT_TYPES = Object.keys(TYPE_ICONS)
+const ACCOUNT_TYPES = ['Bank Account', 'Cash', 'Credit Card', 'E-Wallet', 'Investment']
 
 export default function Accounts() {
   const { accounts, addAccount, deleteAccount, t, tl } = useApp()
@@ -46,7 +46,7 @@ export default function Accounts() {
               >
                 ✕
               </button>
-              <div className="account-icon" aria-hidden="true">{TYPE_ICONS[a.type] || '💰'}</div>
+              <div className="account-icon" aria-hidden="true"><AccountTypeIcon type={a.type} /></div>
               <div className="account-type">{tl('accType', a.type)}</div>
               <div className="account-name">{a.name}</div>
               <div className="account-balance">{fmtMoney(a.balance, 2)}</div>

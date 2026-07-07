@@ -19,7 +19,7 @@ export default function Login() {
   const [name, setName] = useState('')
   const [showPw, setShowPw] = useState(false)
   const [touched, setTouched] = useState({})
-  const [busy, setBusy] = useState(false)
+  const [busy, setBusy] = useState(false) // false | 'form' | 'demo'
 
   const isSignup = mode === 'signup'
 
@@ -40,8 +40,20 @@ export default function Login() {
     e.preventDefault()
     setTouched({ email: true, password: true, name: true })
     if (invalid || busy) return
-    setBusy(true)
+    setBusy('form')
     setTimeout(() => login(email), 900) // simulated auth — client-side only
+  }
+
+  // One-click demo access — fills the form so the flow stays legible.
+  const demoLogin = () => {
+    if (busy) return
+    const demoEmail = 'demo@wealthshare.app'
+    setMode('signin')
+    setEmail(demoEmail)
+    setPassword('demo-account')
+    setTouched({})
+    setBusy('demo')
+    setTimeout(() => login(demoEmail), 900)
   }
 
   return (
@@ -154,11 +166,18 @@ export default function Login() {
               {touched.password && passwordError && <div className="field-error">{passwordError}</div>}
             </div>
 
-            <button type="submit" className="btn btn-primary au-submit" disabled={busy}>
-              {busy && <span className="spinner" />}
-              {busy ? t('login.signingIn') : isSignup ? t('login.createAccount') : t('login.signIn')}
+            <button type="submit" className="btn btn-primary au-submit" disabled={!!busy}>
+              {busy === 'form' && <span className="spinner" />}
+              {busy === 'form' ? t('login.signingIn') : isSignup ? t('login.createAccount') : t('login.signIn')}
             </button>
           </form>
+
+          <div className="au-divider" aria-hidden="true"><span>{t('login.or')}</span></div>
+
+          <button type="button" className="btn btn-ghost au-submit" onClick={demoLogin} disabled={!!busy}>
+            {busy === 'demo' && <span className="spinner dark" />}
+            {busy === 'demo' ? t('login.signingIn') : t('login.demoSignIn')}
+          </button>
 
           <div className="au-alt">
             {isSignup ? t('login.haveAccount') : t('login.noAccount')}{' '}

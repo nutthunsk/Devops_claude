@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useApp } from '../store'
 import { Modal } from '../components/ui'
+import { Icon } from '../components/icons'
 import { MOCK_COMMENTS, MOCK_TRENDING } from '../data/mock'
 
 export default function Community() {
@@ -31,7 +32,7 @@ export default function Community() {
                 <div className="post-head">
                   {p.author.avatar
                     ? <img src={p.author.avatar} alt="" onError={(e) => { e.currentTarget.style.visibility = 'hidden' }} />
-                    : <span className="tx-icon" style={{ borderRadius: '50%' }}>🙂</span>}
+                    : <span className="tx-icon" style={{ borderRadius: '50%' }}><Icon name="user" /></span>}
                   <div>
                     <div className="post-author">{p.author.name}{p.mine ? ` ${t('community.you')}` : ''}</div>
                     <div className="post-when">{p.created_at === 'Just now' ? t('community.justNow') : p.created_at}</div>
@@ -46,10 +47,10 @@ export default function Community() {
                     onClick={() => toggleVote(p.post_id)}
                     aria-pressed={p.voted}
                   >
-                    ▲ {p.upvotes.toLocaleString()}
+                    <Icon name="arrow-up" size={13} strokeWidth={2.2} /> {p.upvotes.toLocaleString()}
                   </button>
                   <button className="chip-btn" onClick={() => toggleComments(p.post_id)} aria-expanded={!!open}>
-                    💬 {t('community.comments', { n: p.comments_count })}
+                    <Icon name="message-circle" size={13} strokeWidth={2.2} /> {t('community.comments', { n: p.comments_count })}
                   </button>
                 </div>
                 {open && (

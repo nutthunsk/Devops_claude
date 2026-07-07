@@ -33,7 +33,7 @@ function Shell() {
   return (
     <Layout page={page} onNav={nav}>
       {loading ? (
-        <PageSkeleton />
+        <PageSkeleton page={page} />
       ) : page === 'dashboard' ? (
         <Dashboard onNav={nav} />
       ) : page === 'accounts' ? (

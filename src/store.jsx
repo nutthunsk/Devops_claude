@@ -45,14 +45,6 @@ export const fmtDate = (iso) =>
 
 export const todayISO = () => new Date().toISOString().slice(0, 10)
 
-const CAT_EMOJI = {
-  Housing: '🏠', 'Food & Drink': '🍜', Transport: '🚇', Shopping: '🛍️',
-  'Bills & Utilities': '💡', Entertainment: '🎬', Investment: '📈', Health: '💊',
-  Salary: '💼', Freelance: '🧑‍💻', 'Side Hustle': '🔧', Dividends: '🏦',
-  Interest: '🪙', Gift: '🎁', Other: '📦',
-}
-export const catEmoji = (c) => CAT_EMOJI[c] || '📦'
-
 export function AppProvider({ children }) {
   const [user, setUser] = useState(null)
   const [accounts, setAccounts] = useState(MOCK_ACCOUNTS)
